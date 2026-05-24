@@ -1,0 +1,10 @@
+.\objects\timers.o: RTOS\timers.c
+.\objects\timers.o: RTOS\timers.h
+.\objects\timers.o: RTOS\sched.h
+.\objects\timers.o: RTOS\task.h
+.\objects\timers.o: .\RTE\Device\STM32F103C8\stm32f10x.h
+.\objects\timers.o: .\RTE\Device\STM32F103C8\core_cm3.h
+.\objects\timers.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\timers.o: .\RTE\Device\STM32F103C8\system_stm32f10x.h
+.\objects\timers.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\timers.o: RTOS\queue.h

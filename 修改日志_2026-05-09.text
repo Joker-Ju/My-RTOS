@@ -1,0 +1,236 @@
+================================================================================
+  项目：MyKernel (My_RTOS) — 调度器修复与 LED 无阻塞闪烁实现
+  日期：2026-05-09
+  目标：让 LED0 (PA0) 和 LED1 (PA1) 以 500ms 间隔无阻塞交替闪烁
+================================================================================
+
+【一、问题分析】
+
+通过对全部源码的审查，发现调度器存在 4 个关键 Bug：
+
+Bug 1 — start_scheduler() 汇编实现导致 HardFault (致命)
+----------------------------------------------------------
+  文件：RTOS/my_port.c
+  问题：start_scheduler 在 Thread 模式（非异常处理模式）下执行了：
+        LDR LR, =0xFFFFFFFD
+        BX LR
+  原因：Cortex-M3 中，BX LR 带 EXC_RETURN 值触发"异常返回"的功能
+        仅适用于 Handler 模式。在 Thread 模式下，BX LR 被视为普通跳转，
+        会跳转到 0xFFFFFFFC（无效地址），立即触发 HardFault。
+  结果：第一个任务永远无法运行，系统在启动瞬间即崩溃。
+
+Bug 2 — PendSV_Handler() LR 被覆盖导致异常返回失效 (致命)
+----------------------------------------------------------
+  文件：RTOS/my_port.c
+  问题：PendSV 异常入口时 LR 由硬件设置为 EXC_RETURN (0xFFFFFFFD)。
+        但随后执行 BL scheduler_on_pendsv，BL 指令将 LR 覆盖为函数
+        返回地址。后续的 BX LR 变成了跳转到 CBZ 语句，形成死循环。
+  结果：任务切换只执行一次，然后卡死在 PendSV_Handler 内的循环。
+
+Bug 3 — SysTick 从未初始化 (致命)
+----------------------------------------------------------
+  文件：RTOS/sched.c（systick_init_1ms 存在但从未被调用）
+  问题：systick_init_1ms() 完整定义了 SysTick 的 1ms 定时中断配置，
+        但在整个项目的启动流程中没有任何地方调用它。
+  结果：SysTick 不工作，system_tick 永远为 0，delay_list 中的任务
+        （LED0_Task, LED1_Task, Start_Task）永远不会被唤醒。
+        所有任务 delay 一次后系统永久空闲。
+
+Bug 4 — 中断从未使能 (致命)
+----------------------------------------------------------
+  文件：RTOS/my_port.c
+  问题：start_scheduler 入口执行 CPSID I（关中断，设置 PRIMASK=1），
+        但之后没有在任何地方执行 CPSIE I（开中断）。
+        即使 SysTick 配置正确，由于 PRIMASK 置位，中断也不会触发。
+  结果：SysTick 中断被屏蔽，同 Bug 3，调度器无心跳。
+
+其他问题：
+  - PendSV 和 SysTick 中断优先级未配置，可能因优先级问题导致异常行为
+  - My_RTOS.c 中缺少 #include "sched.h"，依赖隐式函数声明
+
+================================================================================
+
+【二、修改的文件与内容】
+
+文件 1: RTOS/my_port.c (完全重写)
+----------------------------------------------------------
+修改内容：
+  (a) start_scheduler():
+      删除原来的 Thread 模式 BX LR 实现。
+      改为：
+      - BL scheduler_get_next 获得第一个 TCB
+      - LDMIA R0!, {R4-R11} 将任务上下文加载到 CPU 寄存器
+      - MSR PSP, R0 设置 PSP 指向任务的 hw frame
+      - MSR CONTROL, #2 / ISB 切换到 PSP 模式
+      - SVC 0 进入 Handler 模式
+  (b) 新增 SVC_Handler():
+      - CPSIE I 开中断
+      - MRS R0, PSP / ADDS R0, #32 / MSR PSP, R0
+        → 跳过 SVC 自动压入的 8 个字（在 R4-R11 保存区），
+          让 PSP 指向任务原本的 hw frame
+      - BX LR 触发异常返回（LR=0xFFFFFFFD），
+        硬件从 PSP 弹出任务的 PC/LR/R0-R3/R12/xPSR → 任务开始运行
+      - 关键：不调用任何 BL 指令，LR 保留 EXC_RETURN 值不变
+  (c) PendSV_Handler():
+      - 入口 PUSH {R12, LR} 保存 EXC_RETURN
+      - MRS PSP / STMDB R4-R11 保存当前任务上下文
+      - BL scheduler_on_pendsv 调度
+      - LDMIA R4-R11 / MSR PSP 恢复下一任务上下文
+      - POP {R12, PC} 异常返回（而非原来的 BX LR）
+
+  核心改动 1：BL 之前先 PUSH LR 保存 EXC_RETURN，用 POP PC 替代 BX LR
+            来做异常返回。
+  核心改动 2：SVC 会在进程栈上压入 8 个字覆盖 R4-R11 保存区，
+            SVC_Handler 必须将 PSP += 32 来跳过这 8 个字，
+            让异常返回弹出任务的 hw frame（xPSR/PC/LR/R12/R3-R0）。
+  核心改动 3：R4-R11 需要在 start_scheduler 中（SVC 之前）通过 LDMIA
+            加载到 CPU，因为 SVC 会覆盖栈上的 R4-R11 保存区但不会
+            碰 CPU 寄存器。
+
+文件 2: RTOS/sched.c
+----------------------------------------------------------
+在 scheduler_init() 末尾新增：
+  (a) *(volatile uint8_t*)0xE000ED22 = 0xFF;  → PendSV 优先级最低
+  (b) *(volatile uint8_t*)0xE000ED23 = 0x0F;  → SysTick 优先级
+
+文件 3: App/My_RTOS.c
+----------------------------------------------------------
+  (a) 新增 #include "sched.h"（替代原来 extern 声明）
+  (b) 在 My_RTOS_Start() 中，scheduler_init() 之后，
+      task_create() 之前，新增 systick_init_1ms() 调用
+  (c) 删除冗余的 extern void scheduler_init(void); 声明
+
+================================================================================
+
+【三、完整的系统启动流程（修复后）】
+
+Reset → SystemInit() → __main → main() → My_RTOS_Start()
+  1. scheduler_init()
+     - 清空就绪队列
+     - 设置 PendSV 优先级 = 0xFF（最低）
+     - 设置 SysTick 优先级 = 0x0F
+  2. systick_init_1ms()
+     - SystemCoreClockUpdate() 计算实际 HCLK（72MHz）
+     - SysTick LOAD = 71999（1ms 周期）
+     - 使能 SysTick 计数器 + 中断（但此时 PRIMASK=0，中断已全局使能）
+  3. task_create(Start_Task) → Start_Task 加入就绪队列 prio=0
+  4. start_scheduler()
+     - CPSID I（关中断，防初始化干扰）
+     - SVC 0 → 进入 Handler 模式的 SVC_Handler
+     - scheduler_get_next() → 取出 Start_Task
+     - 恢复 Start_Task 的寄存器上下文（R4-R11, PSP）
+     - MSR CONTROL=2 → Thread 模式使用 PSP
+     - CPSIE I → 开中断（SysTick 开始工作）
+     - POP {R12, PC} → 异常返回至 Start_Task
+  5. Start_Task 运行：
+     - task_create(LED0_Task) → LED0 加入就绪队列 prio=2
+     - task_create(LED1_Task) → LED1 加入就绪队列 prio=2
+     - task_delay(500) → Start_Task 阻塞，触发 PendSV
+  6. PendSV_Handler → scheduler_on_pendsv → LED0_Task 被选中
+  7. LED0_Task 运行：
+     - LED0_Toggle() → PA0 翻转
+     - task_delay(500) → LED0 阻塞 500ms，触发 PendSV
+  8. PendSV_Handler → scheduler_on_pendsv → LED1_Task 被选中
+  9. LED1_Task 运行：
+     - LED1_Toggle() → PA1 翻转
+     - task_delay(500) → LED1 阻塞 500ms，触发 PendSV
+  10. SysTick 每 1ms 触发一次：
+      - system_tick++
+      - delay_list_tick() 检查哪些任务到期 → 到期任务重新加入就绪队列
+      - PendSV 被触发 → 调度器选择最高优先级就绪任务运行
+  11. 重复 7-10，LED0 和 LED1 以 500ms 间隔无阻塞交替闪烁
+
+================================================================================
+
+【四、优先级配置说明】
+
+  任务            抢占优先级  响应优先级  说明
+  ─────────────────────────────────────────────────
+  Start_Task          0          0      启动后即阻塞，优先级最低
+  LED0_Task           1          2      抢占 Start_Task
+  LED1_Task           1          2      同 LED0，时间片轮转
+
+  PendSV 优先级 = 0xFF（写入 0xFF → 有效优先级 0xF0 = 15，最低）
+  SysTick 优先级 = 0xF0（写入 0xF0 → 有效优先级 0xF0 = 15，最低）
+  注：STM32F103 NVIC 实现 4 位优先级，bits[7:4] 有效，bits[3:0] 忽略。
+      数值越大优先级越低。SVC 默认优先级 0（最高），不会被任何中断抢占。
+
+================================================================================
+
+【五、编译问题修复】
+
+首次编译报 30 个 Error：
+  - 所有错误集中在 RTOS/my_port.c 的 __asm 内联汇编块中
+  - 错误信息: "#7: unrecognized token"
+  - 原因：ARMCC V5 的 armasm.exe（内联汇编器）不支持 UTF-8 编码中的
+         中文字符。文件内容通过 Write 工具写入时使用了 UTF-8 编码，
+         而 Chinese Windows 下 ARMCC 需要 ASCII 或系统 ANSI(GBK) 编码
+  - 修复：重写 my_port.c，将 __asm 块内的所有中文注释改为纯英文
+          注释或移除注释（C 语言的 // 注释不受影响，因为 C 编译器
+          会预处理后再传给汇编器，但 __asm 块中的 ; 注释会直接
+          传给 armasm.exe，它不识别中文字符）
+
+  C 代码中的中文注释不受影响（C 编译器处理编码后输出纯汇编给 armasm）。
+
+最终编译结果：
+  - ARMCC V5.06 update 5 (build 528)
+  - 0 Error(s), 0 Warning(s)
+  - Program Size: Code=2264 RO-data=268 RW-data=48 ZI-data=3264
+  - 生成文件: Objects/ARM_Asembly.axf (ELF)
+  - 生成文件: Objects/ARM_Asembly.hex (Intel HEX, 7317 字节)
+  - 生成文件: Objects/ARM_Asembly.bin (Raw Binary, 2580 字节)
+
+首次烧录后 SVC → HardFault 的问题分析：
+  根因 1：SVC 异常进入时会自动向 PSP 压入 8 个字的上下文帧
+          （xPSR/PC/LR/R12/R3-R0），PSP -= 32。
+          该压栈覆盖了任务栈上的 hw frame，导致异常返回时弹出
+          的是 SVC 的上下文而非任务的上下文，PC 指向 SVC 的返回地址
+          （start_scheduler 中 SVC 的下一条指令）而非任务函数入口。
+  根因 2：最初版本的 SVC_Handler 中调用了 BL scheduler_get_next，
+          BL 覆盖了 LR(EXC_RETURN = 0xFFFFFFFD)，后续 BX LR 变成
+          普通跳转而非异常返回，直接进入 HardFault。
+  修复：
+  ① start_scheduler 在 SVC 之前通过 LDMIA 把 R4-R11 加载到 CPU
+     寄存器（后续即使栈上 R4-R11 被 SVC 覆盖也不影响）
+  ② start_scheduler 设置 PSP = 任务 hw frame 起始地址
+  ③ SVC 压栈 8 个字 → 覆盖栈上的 R4-R11 保存区（hw frame 安全）
+  ④ SVC_Handler 中 PSP += 32 跳过 SVC 帧指向任务的 hw frame
+  ⑤ SVC_Handler 不调用任何 BL 指令（LR 保留 EXC_RETURN）
+  ⑥ BX LR 异常返回 → 弹出任务的 hw frame → 任务正常运行
+
+================================================================================
+
+【六、下载与调试步骤】
+
+在 Keil MDK IDE 中操作：
+  1. 打开 ARM_Asembly.uvprojx
+  2. Project → Build Target (F7)          编译
+  3. Debug → Start/Stop Debug Session     进入调试
+  4. 在 Debug 界面：
+     - 打开 View → Watch Windows → Watch 1
+     - 添加变量: system_tick（观察节拍计数）
+     - 添加变量: current_tcb->state（观察任务状态）
+  5. Debug → Run (F5)                     全速运行
+  6. 观察 GPIOA ODR 寄存器或直接用示波器/万用表测 PA0/PA1
+
+预期行为：
+  - LED0（PA0）以 500ms 间隔亮灭闪烁
+  - LED1（PA1）以 500ms 间隔亮灭闪烁
+  - LED0 和 LED1 交替翻转
+  - 两个 LED 的闪烁互不阻塞（调度器实现无阻塞切换）
+  - system_tick 每秒递增约 1000
+
+================================================================================
+
+【七、修改文件清单】
+
+  文件                                        状态        说明
+  ─────────────────────────────────────────────────────────────────
+  RTOS/my_port.c                              修改(3次)   重写汇编上下文切换代码
+  RTOS/sched.c                                修改(1次)   添加 PendSV/SysTick 优先级
+  App/My_RTOS.c                               修改(1次)   添加 SysTick 初始化
+  修改日志_2026-05-09.text                    新建        本文件
+
+================================================================================
+  日志结束
+================================================================================

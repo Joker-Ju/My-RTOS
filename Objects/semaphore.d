@@ -1,0 +1,9 @@
+.\objects\semaphore.o: RTOS\semaphore.c
+.\objects\semaphore.o: RTOS\semaphore.h
+.\objects\semaphore.o: RTOS\task.h
+.\objects\semaphore.o: .\RTE\Device\STM32F103C8\stm32f10x.h
+.\objects\semaphore.o: .\RTE\Device\STM32F103C8\core_cm3.h
+.\objects\semaphore.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\semaphore.o: .\RTE\Device\STM32F103C8\system_stm32f10x.h
+.\objects\semaphore.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\semaphore.o: RTOS\sched.h

@@ -1,0 +1,118 @@
+Dependencies for Project 'ARM_Asembly', Target 'Cotex-M3': (DO NOT MODIFY !)
+F (.\App\main.c)(0x69FEDFD3)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (App\My_RTOS.h)(0x6A080E98)
+F (.\App\My_RTOS.c)(0x6A0AEEE1)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\my_rtos.o --omf_browse .\objects\my_rtos.crf --depend .\objects\my_rtos.d)
+I (App\My_RTOS.h)(0x6A080E98)
+I (.\RTOS\sched.h)(0x6A09B10F)
+I (.\RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+I (.\RTOS\semaphore.h)(0x6A0324BC)
+I (.\Hardware\Led.h)(0x69FED084)
+I (.\Hardware\Usart.h)(0x69F1CDDC)
+I (E:\Keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
+I (.\RTOS\queue.h)(0x6A057571)
+I (E:\Keil5\ARM\ARMCC\include\string.h)(0x588B8344)
+I (.\RTOS\timers.h)(0x6A0C0197)
+I (.\RTOS\event_groups.h)(0x6A086397)
+I (.\RTOS\heap.h)(0x6A095C4B)
+F (.\App\My_RTOS.h)(0x6A080E98)()
+F (.\RTOS\tool.h)(0x6A055DF7)()
+F (.\RTOS\kernel.c)(0x69FD7E8E)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\kernel.o --omf_browse .\objects\kernel.crf --depend .\objects\kernel.d)
+F (.\RTOS\kernel.h)(0x69FD7E8E)()
+F (.\RTOS\os_config.h)(0x69FD7F2B)()
+F (.\RTOS\sched.c)(0x6A0BD852)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\sched.o --omf_browse .\objects\sched.crf --depend .\objects\sched.d)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+F (.\RTOS\sched.h)(0x6A09B10F)()
+F (.\RTOS\task.c)(0x6A0BD7FE)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\task.o --omf_browse .\objects\task.crf --depend .\objects\task.d)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+F (.\RTOS\task.h)(0x6A0BD81D)()
+F (.\RTOS\semaphore.c)(0x6A06DDAC)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\semaphore.o --omf_browse .\objects\semaphore.crf --depend .\objects\semaphore.d)
+I (RTOS\semaphore.h)(0x6A0324BC)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+I (RTOS\sched.h)(0x6A09B10F)
+F (.\RTOS\semaphore.h)(0x6A0324BC)()
+F (.\RTOS\task_switch.s)(0x6A0C12FA)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include--pd "__UVISION_VERSION SETA 524" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1"--list .\listings\task_switch.lst --xref -o .\objects\task_switch.o --depend .\objects\task_switch.d)
+F (.\RTOS\queue.c)(0x6A081165)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\queue.o --omf_browse .\objects\queue.crf --depend .\objects\queue.d)
+I (RTOS\queue.h)(0x6A057571)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+I (E:\Keil5\ARM\ARMCC\include\string.h)(0x588B8344)
+F (.\RTOS\queue.h)(0x6A057571)()
+F (.\RTOS\timers.c)(0x6A0828F5)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\timers.o --omf_browse .\objects\timers.crf --depend .\objects\timers.d)
+I (RTOS\timers.h)(0x6A0C0197)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+I (RTOS\queue.h)(0x6A057571)
+F (.\RTOS\timers.h)(0x6A0C0197)()
+F (.\RTOS\event_groups.c)(0x6A086379)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\event_groups.o --omf_browse .\objects\event_groups.crf --depend .\objects\event_groups.d)
+I (RTOS\event_groups.h)(0x6A086397)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+F (.\RTOS\event_groups.h)(0x6A086397)()
+F (.\RTOS\heap.c)(0x6A098022)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\heap.o --omf_browse .\objects\heap.crf --depend .\objects\heap.d)
+I (RTOS\heap.h)(0x6A095C4B)
+I (RTOS\sched.h)(0x6A09B10F)
+I (RTOS\task.h)(0x6A0BD81D)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stddef.h)(0x588B8344)
+F (.\RTOS\heap.h)(0x6A095C4B)()
+F (.\Hardware\Led.c)(0x6A0011F3)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\led.o --omf_browse .\objects\led.crf --depend .\objects\led.d)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (Hardware\Led.h)(0x69FED084)
+F (.\Hardware\Led.h)(0x69FED084)()
+F (.\Hardware\Usart.c)(0x6A05BFB0)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\usart.o --omf_browse .\objects\usart.crf --depend .\objects\usart.d)
+I (.\RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (.\RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (.\RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)
+I (E:\Keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
+F (.\Hardware\Usart.h)(0x69F1CDDC)()
+F (RTE\Device\STM32F103C8\RTE_Device.h)(0x57D24F70)()
+F (RTE\Device\STM32F103C8\startup_stm32f10x_md.s)(0x5825386C)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include--pd "__UVISION_VERSION SETA 524" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1"--list .\listings\startup_stm32f10x_md.lst --xref -o .\objects\startup_stm32f10x_md.o --depend .\objects\startup_stm32f10x_md.d)
+F (RTE\Device\STM32F103C8\system_stm32f10x.c)(0x5825386C)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\RTOS -I .\Hardware -I .\RTE\Device\STM32F103C8-I.\RTE\Device\STM32F103C8-I.\RTE\_Cotex-M3-IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD-o .\objects\system_stm32f10x.o --omf_browse .\objects\system_stm32f10x.crf --depend .\objects\system_stm32f10x.d)
+I (RTE\Device\STM32F103C8\stm32f10x.h)(0x4D783CB4)
+I (RTE\Device\STM32F103C8\core_cm3.h)(0x4D523B58)
+I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
+I (RTE\Device\STM32F103C8\system_stm32f10x.h)(0x4D783CAA)

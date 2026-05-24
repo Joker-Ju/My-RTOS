@@ -1,0 +1,10 @@
+.\objects\queue.o: RTOS\queue.c
+.\objects\queue.o: RTOS\queue.h
+.\objects\queue.o: RTOS\sched.h
+.\objects\queue.o: RTOS\task.h
+.\objects\queue.o: .\RTE\Device\STM32F103C8\stm32f10x.h
+.\objects\queue.o: .\RTE\Device\STM32F103C8\core_cm3.h
+.\objects\queue.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\queue.o: .\RTE\Device\STM32F103C8\system_stm32f10x.h
+.\objects\queue.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\queue.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h

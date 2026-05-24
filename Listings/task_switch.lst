@@ -1,0 +1,358 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 00000030 
+                       TCB_GUARD_OFFSET
+                               EQU              48
+    2 00000000 00000034 
+                       TCB_STACK_BASE_OFFSET
+                               EQU              52
+    3 00000000         
+    4 00000000                 AREA             TCB_BSS, DATA, NOINIT, READWRIT
+E, ALIGN=2
+    5 00000000                 EXPORT           current_tcb
+    6 00000000         current_tcb
+    7 00000000                 SPACE            4           ; 为指针分配4�
+                                                            ��节空间，初�
+                                                            �为0
+    8 00000004                 AREA             |.text|,CODE,READONLY
+    9 00000000         
+   10 00000000                 IMPORT           scheduler_get_next
+   11 00000000                 EXPORT           start_scheduler
+   12 00000000                 EXPORT           SVC_Handler
+   13 00000000                 EXPORT           PendSV_Handler
+   14 00000000                 EXPORT           HardFault_Handler
+   15 00000000                 THUMB
+   16 00000000         start_scheduler
+   17 00000000 B672            CPSID            I
+   18 00000002         
+   19 00000002         
+   20 00000002 F7FF FFFE       BL               scheduler_get_next
+   21 00000006 B170            CBZ              R0, NO_TASK
+   22 00000008         
+   23 00000008         
+   24 00000008 4925            LDR              R1, =current_tcb
+   25 0000000A 6008            STR              R0, [R1]
+   26 0000000C         
+   27 0000000C         
+   28 0000000C 6800            LDR              R0, [R0]
+   29 0000000E E8B0 0FF0       LDMIA            R0!, {R4-R11}
+   30 00000012         
+   31 00000012         
+   32 00000012 F380 8809       MSR              PSP, R0
+   33 00000016         
+   34 00000016 2002            MOVS             R0, #2
+   35 00000018 F380 8814       MSR              CONTROL, R0
+   36 0000001C F3BF 8F6F       ISB
+   37 00000020 B662            CPSIE            I
+   38 00000022         
+   39 00000022 DF00            SVC              0
+   40 00000024 E7FE            B                .
+   41 00000026         
+   42 00000026         NO_TASK
+   43 00000026 BE00            BKPT             0
+   44 00000028                 ALIGN
+   45 00000028         
+   46 00000028         
+   47 00000028         
+   48 00000028         SVC_Handler
+   49 00000028         
+   50 00000028                 THUMB
+   51 00000028         
+   52 00000028 B662            CPSIE            I
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   53 0000002A         
+   54 0000002A         
+   55 0000002A F3EF 8009       MRS              R0, PSP
+   56 0000002E 3020            ADDS             R0, R0, #32
+   57 00000030 F380 8809       MSR              PSP, R0
+   58 00000034         
+   59 00000034         
+   60 00000034 4770            BX               LR
+   61 00000036 00 00           ALIGN
+   62 00000038         
+   63 00000038         HardFault_Handler
+   64 00000038                 IMPORT           HardFault_Diagnose
+   65 00000038         
+   66 00000038                 THUMB
+   67 00000038         
+   68 00000038 F01E 0F04       TST              LR, #4      ;检查 LR bit 2
+   69 0000003C BF0C            ITE              EQ
+   70 0000003E F3EF 8008       MRSEQ            R0, MSP     ; bit2=0 → 帧在
+                                                             MSP
+   71 00000042 F3EF 8009       MRSNE            R0, PSP     ; bit2=1 → 帧在
+                                                             PSP
+   72 00000046 F7FF BFFE       B                HardFault_Diagnose
+   73 0000004A         
+   74 0000004A         
+   75 0000004A         
+   76 0000004A         PendSV_Handler
+   77 0000004A                 IMPORT           scheduler_on_pendsv
+   78 0000004A                 IMPORT           GuardFault_Handler
+   79 0000004A         
+   80 0000004A                 THUMB
+   81 0000004A         
+   82 0000004A E92D 5000       PUSH             {R12, LR}
+   83 0000004E         
+   84 0000004E F3EF 8009       MRS              R0, PSP
+   85 00000052 E920 0FF0       STMDB            R0!, {R4-R11}
+   86 00000056         
+   87 00000056         
+   88 00000056         
+   89 00000056         
+   90 00000056         
+   91 00000056 4D12            LDR              R5, =current_tcb
+   92 00000058 682D            LDR              R5, [R5]    ; R5 = current_tcb�
+                                                            ��整个 PendSV 都
+                                                            不改 R5）
+   93 0000005A         ; ; ── 向上检查：哨兵 ──
+   94 0000005A         ; R5 = 下一个任务的 TCB 指针
+   95 0000005A 6B29            LDR              R1, [R5, #TCB_GUARD_OFFSET] ; R
+                                                            5 = TCB->guard_addr
+                                                            （用你数的偏�
+                                                            ��）
+   96 0000005C 680A            LDR              R2, [R1]    ; R2 = *guard_addr
+   97 0000005E 4B11            LDR              R3, =0xDEADBEEF
+   98 00000060 429A            CMP              R2, R3
+   99 00000062 D10F            BNE              GUARD_CORRUPTED
+  100 00000064         ; ── 向下检查：SP < stack_base？──
+  101 00000064 6B69            LDR              R1, [R5, #TCB_STACK_BASE_OFFSET
+] 
+                                                            ; R1 = stack_base
+  102 00000066 4288            CMP              R0, R1      ; R0 = PSP-32
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+  103 00000068 D312            BLO              STACK_UNDERFLOW
+  104 0000006A         
+  105 0000006A 6028            STR              R0, [R5]    ; current_tcb->stac
+                                                            k_ptr = R0（R5 就
+                                                            是 TCB 指针）
+  106 0000006C         ;current_tcb是该全局变量的地址 
+  107 0000006C         
+  108 0000006C F7FF FFFE       BL               scheduler_on_pendsv
+  109 00000070 B1A0            CBZ              R0, PEND_NO_TASK
+  110 00000072         
+  111 00000072 490B            LDR              R1, =current_tcb
+  112 00000074 6008            STR              R0, [R1]
+  113 00000076         
+  114 00000076 6800            LDR              R0, [R0]
+  115 00000078 E8B0 0FF0       LDMIA            R0!, {R4-R11}
+  116 0000007C F380 8809       MSR              PSP, R0
+  117 00000080         ;为了对齐
+  118 00000080 E8BD 9000       POP              {R12, PC}
+  119 00000084         GUARD_CORRUPTED
+  120 00000084 4628            MOV              R0, R5      ; 备份 R0（下�
+                                                            �个任务）
+  121 00000086 F04F 0100       MOV              R1, #0
+  122 0000008A 4A07            LDR              R2, =GuardFault_Handler
+  123 0000008C 4790            BLX              R2
+  124 0000008E E7FE            B                .
+  125 00000090         STACK_UNDERFLOW
+  126 00000090 4628            MOV              R0, R5      ; R0 = current_tcb
+  127 00000092 F04F 0101       MOV              R1, #1      ; R1 = 1，表示"�
+                                                            ��下溢出"
+  128 00000096 4A04            LDR              R2, =GuardFault_Handler
+  129 00000098 4790            BLX              R2
+  130 0000009A E7FE            B                .
+  131 0000009C         
+  132 0000009C         PEND_NO_TASK
+  133 0000009C E8BD 9000       POP              {R12, PC}
+  134 000000A0                 ALIGN
+  135 000000A0                 END
+              00000000 
+              DEADBEEF 
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=.\objects\task_switch.d -o.\objects\task_switch.o -I.\RTE\Device\S
+TM32F103C8 -I.\RTE\_Cotex-M3 -IE:\Keil5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include 
+-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include --predefine="__MICR
+OLIB SETA 1" --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SETA 1
+" --predefine="STM32F10X_MD SETA 1" --list=.\listings\task_switch.lst RTOS\task
+_switch.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+TCB_BSS 00000000
+
+Symbol: TCB_BSS
+   Definitions
+      At line 4 in file RTOS\task_switch.s
+   Uses
+      None
+Comment: TCB_BSS unused
+current_tcb 00000000
+
+Symbol: current_tcb
+   Definitions
+      At line 6 in file RTOS\task_switch.s
+   Uses
+      At line 5 in file RTOS\task_switch.s
+      At line 24 in file RTOS\task_switch.s
+      At line 91 in file RTOS\task_switch.s
+      At line 111 in file RTOS\task_switch.s
+
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 8 in file RTOS\task_switch.s
+   Uses
+      None
+Comment: .text unused
+GUARD_CORRUPTED 00000084
+
+Symbol: GUARD_CORRUPTED
+   Definitions
+      At line 119 in file RTOS\task_switch.s
+   Uses
+      At line 99 in file RTOS\task_switch.s
+Comment: GUARD_CORRUPTED used once
+HardFault_Handler 00000038
+
+Symbol: HardFault_Handler
+   Definitions
+      At line 63 in file RTOS\task_switch.s
+   Uses
+      At line 14 in file RTOS\task_switch.s
+Comment: HardFault_Handler used once
+NO_TASK 00000026
+
+Symbol: NO_TASK
+   Definitions
+      At line 42 in file RTOS\task_switch.s
+   Uses
+      At line 21 in file RTOS\task_switch.s
+Comment: NO_TASK used once
+PEND_NO_TASK 0000009C
+
+Symbol: PEND_NO_TASK
+   Definitions
+      At line 132 in file RTOS\task_switch.s
+   Uses
+      At line 109 in file RTOS\task_switch.s
+Comment: PEND_NO_TASK used once
+PendSV_Handler 0000004A
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 76 in file RTOS\task_switch.s
+   Uses
+      At line 13 in file RTOS\task_switch.s
+Comment: PendSV_Handler used once
+STACK_UNDERFLOW 00000090
+
+Symbol: STACK_UNDERFLOW
+   Definitions
+      At line 125 in file RTOS\task_switch.s
+   Uses
+      At line 103 in file RTOS\task_switch.s
+Comment: STACK_UNDERFLOW used once
+SVC_Handler 00000028
+
+Symbol: SVC_Handler
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 48 in file RTOS\task_switch.s
+   Uses
+      At line 12 in file RTOS\task_switch.s
+Comment: SVC_Handler used once
+start_scheduler 00000000
+
+Symbol: start_scheduler
+   Definitions
+      At line 16 in file RTOS\task_switch.s
+   Uses
+      At line 11 in file RTOS\task_switch.s
+Comment: start_scheduler used once
+9 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+TCB_GUARD_OFFSET 00000030
+
+Symbol: TCB_GUARD_OFFSET
+   Definitions
+      At line 1 in file RTOS\task_switch.s
+   Uses
+      At line 95 in file RTOS\task_switch.s
+Comment: TCB_GUARD_OFFSET used once
+TCB_STACK_BASE_OFFSET 00000034
+
+Symbol: TCB_STACK_BASE_OFFSET
+   Definitions
+      At line 2 in file RTOS\task_switch.s
+   Uses
+      At line 101 in file RTOS\task_switch.s
+Comment: TCB_STACK_BASE_OFFSET used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+GuardFault_Handler 00000000
+
+Symbol: GuardFault_Handler
+   Definitions
+      At line 78 in file RTOS\task_switch.s
+   Uses
+      At line 122 in file RTOS\task_switch.s
+      At line 128 in file RTOS\task_switch.s
+
+HardFault_Diagnose 00000000
+
+Symbol: HardFault_Diagnose
+   Definitions
+      At line 64 in file RTOS\task_switch.s
+   Uses
+      At line 72 in file RTOS\task_switch.s
+Comment: HardFault_Diagnose used once
+scheduler_get_next 00000000
+
+Symbol: scheduler_get_next
+   Definitions
+      At line 10 in file RTOS\task_switch.s
+   Uses
+      At line 20 in file RTOS\task_switch.s
+Comment: scheduler_get_next used once
+scheduler_on_pendsv 00000000
+
+Symbol: scheduler_on_pendsv
+   Definitions
+      At line 77 in file RTOS\task_switch.s
+   Uses
+      At line 108 in file RTOS\task_switch.s
+Comment: scheduler_on_pendsv used once
+4 symbols
+353 symbols in table
