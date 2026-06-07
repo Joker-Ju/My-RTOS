@@ -50,17 +50,14 @@ uint32_t sem_take_from_isr(sem_t *sem)
 
 void sem_give(sem_t *sem)
 {
-    uint32_t pm = enter_critical(); // 进入临界区，防止中断干扰
+    uint32_t pm = enter_critical();
     sem->count++;
-    if (sem->wait_list_head != NULL) // 如果有任务在等待
-    {
-        TCB_t *to_ready = sem->wait_list_head; // 获取等待链表头部的任务
-        sem->wait_list_head = to_ready->next; // 更新等待链表头指针
-        to_ready->state = TASK_READY; // 将该任务状态设置为 READY
-        scheduler_add(to_ready); // 将该任务加入就绪队列
-    }
-    exit_critical(pm); // 退出临界区
+    TCB_t *task = wake_one(&sem->wait_list_head);  // ← 一行搞定
+    exit_critical(pm);
 
+    if (task != NULL && current_tcb != NULL && need_preempt(task)) {
+        trigger_switch();
+    }
 }
 
 uint32_t sem_give_from_isr(sem_t *sem)
