@@ -268,7 +268,7 @@ void NotifyTestTask(void *param)
 {
 	while (1) {
 		uint32_t val = task_notify_wait();
-		printf("NotifyTestTask got: %lu\r\n", val);
+		printf("NotifyTestTask got: %u\r\n", val);
 		if (val == 1) LED0_On();
 		else if (val == 0) LED0_Off();
 	}
@@ -466,7 +466,7 @@ void HardFault_Diagnose(uint32_t *frame)
 		p--;
 		uint32_t val = *p;
 		if (val >= 0x08000000 && val <= 0x0803FFFF) {
-			printf("  [%d] 0x%08lX\r\n", idx, val);
+			printf("  [%d] 0x%08X\r\n", idx, val);
 			idx++;
 		}
 	}
@@ -481,9 +481,9 @@ void HardFault_Diagnose(uint32_t *frame)
 		p++;
 	}
 	if (good == 0) {
-		printf("  (all garbage — stack corruption detected)\r\n");
+		printf("(all garbage - stack corruption detected)\r\n");
 	} else {
-		printf("  (%d valid addresses found)\r\n", good);
+		printf("(%d valid addresses found)\r\n", good);
 	}
     while (1);
 }
@@ -493,13 +493,13 @@ void GuardFault_Handler(TCB_t *suspect, uint32_t reason)
 	__disable_irq();
 	if (reason == 0) {
 		printf("\n\n!!! STACK OVERFLOW (GUARD TRIGGERED) !!!\r\n");
-		printf("Guard at:         0x%08lX\r\n", (uint32_t)suspect->guard_addr);
-		printf("Guard value:      0x%08lX (expected 0xDEADBEEF)\r\n",*suspect->guard_addr);
+		printf("Guard at:         0x%08X\r\n", (uint32_t)suspect->guard_addr);
+		printf("Guard value:      0x%08X (expected 0xDEADBEEF)\r\n",*suspect->guard_addr);
 	} 
 	else {
 		printf("\n\n!!! STACK UNDERFLOW (SP < STACK_BASE) !!!\r\n");
 	}
-	printf("Suspect task TCB: 0x%08lX\r\n", (uint32_t)suspect);
-	printf("Stack base:       0x%08lX\r\n", suspect->stack_base);
+	printf("Suspect task TCB: 0x%08X\r\n", (uint32_t)suspect);
+	printf("Stack base:       0x%08X\r\n", suspect->stack_base);
 	while (1);
 }

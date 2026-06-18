@@ -139,7 +139,7 @@ ARM Macro Assembler    Page 3
   105 0000006A 6028            STR              R0, [R5]    ; current_tcb->stac
                                                             k_ptr = R0（R5 就
                                                             是 TCB 指针）
-  106 0000006C         ;current_tcb是该全局变量的地址 
+  106 0000006C         
   107 0000006C         
   108 0000006C F7FF FFFE       BL               scheduler_on_pendsv
   109 00000070 B1A0            CBZ              R0, PEND_NO_TASK

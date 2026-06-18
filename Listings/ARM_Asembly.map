@@ -78,7 +78,9 @@ Section Cross References
     sched.o(i.scheduler_add) refers to task.o(.bss) for ready_queues
     sched.o(i.scheduler_add) refers to task_switch.o(TCB_BSS) for current_tcb
     sched.o(i.scheduler_add_from_isr) refers to task.o(i.pend_to_list) for pend_to_list
+    sched.o(i.scheduler_add_from_isr) refers to task.o(i.need_preempt) for need_preempt
     sched.o(i.scheduler_add_from_isr) refers to task.o(.bss) for ready_queues
+    sched.o(i.scheduler_add_from_isr) refers to task_switch.o(TCB_BSS) for current_tcb
     sched.o(i.scheduler_get_next) refers to sched.o(i.enter_critical) for enter_critical
     sched.o(i.scheduler_get_next) refers to sched.o(i.exit_critical) for exit_critical
     sched.o(i.scheduler_get_next) refers to task.o(.bss) for ready_queues
@@ -99,12 +101,8 @@ Section Cross References
     sched.o(i.trigger_switch) refers to sched.o(.data) for scheduler_suspended
     sched.o(i.vTaskSuspendAll) refers to sched.o(.data) for scheduler_suspended
     sched.o(i.xTaskResumeAll) refers to sched.o(.data) for scheduler_suspended
-    task.o(i.delay_list_add) refers to sched.o(i.enter_critical) for enter_critical
-    task.o(i.delay_list_add) refers to sched.o(i.exit_critical) for exit_critical
     task.o(i.delay_list_add) refers to task.o(.data) for delay_list_head
-    task.o(i.delay_list_tick) refers to sched.o(i.enter_critical) for enter_critical
-    task.o(i.delay_list_tick) refers to sched.o(i.scheduler_add) for scheduler_add
-    task.o(i.delay_list_tick) refers to sched.o(i.exit_critical) for exit_critical
+    task.o(i.delay_list_tick) refers to sched.o(i.scheduler_add_from_isr) for scheduler_add_from_isr
     task.o(i.delay_list_tick) refers to task.o(.data) for delay_list_head
     task.o(i.need_preempt) refers to task_switch.o(TCB_BSS) for current_tcb
     task.o(i.task_create) refers to task.o(i.task_stack_init) for task_stack_init
@@ -116,7 +114,7 @@ Section Cross References
     task.o(i.task_delay) refers to task_switch.o(TCB_BSS) for current_tcb
     task.o(i.task_delay) refers to task.o(.data) for system_tick
     task.o(i.task_notify) refers to sched.o(i.enter_critical) for enter_critical
-    task.o(i.task_notify) refers to sched.o(i.scheduler_add_from_isr) for scheduler_add_from_isr
+    task.o(i.task_notify) refers to sched.o(i.scheduler_add) for scheduler_add
     task.o(i.task_notify) refers to sched.o(i.exit_critical) for exit_critical
     task.o(i.task_notify) refers to task.o(.data) for notify_blocked_list
     task.o(i.task_notify_from_isr) refers to sched.o(i.scheduler_add_from_isr) for scheduler_add_from_isr
@@ -139,8 +137,11 @@ Section Cross References
     semaphore.o(i.mutex_unlock) refers to sched.o(i.scheduler_add) for scheduler_add
     semaphore.o(i.mutex_unlock) refers to task_switch.o(TCB_BSS) for current_tcb
     semaphore.o(i.sem_give) refers to sched.o(i.enter_critical) for enter_critical
-    semaphore.o(i.sem_give) refers to sched.o(i.scheduler_add) for scheduler_add
+    semaphore.o(i.sem_give) refers to task.o(i.wake_one) for wake_one
     semaphore.o(i.sem_give) refers to sched.o(i.exit_critical) for exit_critical
+    semaphore.o(i.sem_give) refers to task.o(i.need_preempt) for need_preempt
+    semaphore.o(i.sem_give) refers to semaphore.o(i.trigger_switch) for trigger_switch
+    semaphore.o(i.sem_give) refers to task_switch.o(TCB_BSS) for current_tcb
     semaphore.o(i.sem_give_from_isr) refers to sched.o(i.vTaskSuspendAll) for vTaskSuspendAll
     semaphore.o(i.sem_give_from_isr) refers to task.o(i.wake_one) for wake_one
     semaphore.o(i.sem_give_from_isr) refers to sched.o(i.xTaskResumeAll) for xTaskResumeAll
@@ -196,6 +197,7 @@ Section Cross References
     event_groups.o(i.event_group_set) refers to sched.o(i.enter_critical) for enter_critical
     event_groups.o(i.event_group_set) refers to sched.o(i.scheduler_add) for scheduler_add
     event_groups.o(i.event_group_set) refers to sched.o(i.exit_critical) for exit_critical
+    event_groups.o(i.event_group_set_from_isr) refers to sched.o(i.scheduler_add_from_isr) for scheduler_add_from_isr
     event_groups.o(i.event_group_wait) refers to sched.o(i.enter_critical) for enter_critical
     event_groups.o(i.event_group_wait) refers to sched.o(i.exit_critical) for exit_critical
     event_groups.o(i.event_group_wait) refers to task_switch.o(TCB_BSS) for current_tcb
@@ -492,13 +494,15 @@ Removing Unused input sections from the image.
 
     Removing task.o(i.task_notify_from_isr), (56 bytes).
     Removing semaphore.o(i.sem_create), (8 bytes).
-    Removing semaphore.o(i.sem_give), (46 bytes).
+    Removing semaphore.o(i.sem_give), (56 bytes).
     Removing semaphore.o(i.sem_give_from_isr), (36 bytes).
     Removing semaphore.o(i.sem_take), (72 bytes).
     Removing semaphore.o(i.sem_take_from_isr), (32 bytes).
     Removing queue.o(i.queue_recv_from_isr), (78 bytes).
     Removing queue.o(i.queue_send), (144 bytes).
+    Removing event_groups.o(i.event_group_clear_from_isr), (12 bytes).
     Removing event_groups.o(i.event_group_init), (8 bytes).
+    Removing event_groups.o(i.event_group_set_from_isr), (122 bytes).
     Removing heap.o(i.heap_free), (140 bytes).
     Removing heap.o(i.heap_init), (28 bytes).
     Removing heap.o(i.heap_malloc), (112 bytes).
@@ -514,7 +518,7 @@ Removing Unused input sections from the image.
     Removing cdrcmple.o(.text), (48 bytes).
     Removing depilogue.o(.text), (186 bytes).
 
-23 unused section(s) (total 3412 bytes) removed from the image.
+25 unused section(s) (total 3556 bytes) removed from the image.
 
 ==============================================================================
 
@@ -526,33 +530,33 @@ Image Symbol Table
 
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
     ../clib/microlib/printf/stubs.s          0x00000000   Number         0  stubs.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
     ../clib/microlib/string/strcmp.c         0x00000000   Number         0  strcmp.o ABSOLUTE
@@ -570,7 +574,6 @@ Image Symbol Table
     RTE\Device\STM32F103C8\system_stm32f10x.c 0x00000000   Number         0  system_stm32f10x.o ABSOLUTE
     RTOS\event_groups.c                      0x00000000   Number         0  event_groups.o ABSOLUTE
     RTOS\heap.c                              0x00000000   Number         0  heap.o ABSOLUTE
-    RTOS\kernel.c                            0x00000000   Number         0  kernel.o ABSOLUTE
     RTOS\queue.c                             0x00000000   Number         0  queue.o ABSOLUTE
     RTOS\sched.c                             0x00000000   Number         0  sched.o ABSOLUTE
     RTOS\semaphore.c                         0x00000000   Number         0  semaphore.o ABSOLUTE
@@ -602,88 +605,88 @@ Image Symbol Table
     i.CmdTask                                0x080002b4   Section        0  my_rtos.o(i.CmdTask)
     i.GuardFault_Handler                     0x080002f8   Section        0  my_rtos.o(i.GuardFault_Handler)
     i.HardFault_Diagnose                     0x08000420   Section        0  my_rtos.o(i.HardFault_Diagnose)
-    i.LED0_Init                              0x08000774   Section        0  led.o(i.LED0_Init)
-    i.LED0_Off                               0x080007a8   Section        0  led.o(i.LED0_Off)
-    i.LED0_On                                0x080007bc   Section        0  led.o(i.LED0_On)
-    i.LED0_Toggle                            0x080007d0   Section        0  led.o(i.LED0_Toggle)
-    i.LED1_Init                              0x080007fc   Section        0  led.o(i.LED1_Init)
-    i.LED1_Off                               0x08000830   Section        0  led.o(i.LED1_Off)
-    i.LED1_Toggle                            0x08000844   Section        0  led.o(i.LED1_Toggle)
-    i.My_RTOS_Start                          0x08000870   Section        0  my_rtos.o(i.My_RTOS_Start)
-    i.NotifyTestTask                         0x080008e8   Section        0  my_rtos.o(i.NotifyTestTask)
-    i.SetSysClock                            0x08000928   Section        0  system_stm32f10x.o(i.SetSysClock)
-    SetSysClock                              0x08000929   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
-    i.SetSysClockTo72                        0x08000930   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
-    SetSysClockTo72                          0x08000931   Thumb Code   214  system_stm32f10x.o(i.SetSysClockTo72)
-    i.Start_Task                             0x08000a10   Section        0  my_rtos.o(i.Start_Task)
-    i.SysTick_Handler                        0x08000ad8   Section        0  my_rtos.o(i.SysTick_Handler)
-    i.SystemCoreClockUpdate                  0x08000afc   Section        0  system_stm32f10x.o(i.SystemCoreClockUpdate)
-    i.SystemInit                             0x08000ba0   Section        0  system_stm32f10x.o(i.SystemInit)
-    i.Task1                                  0x08000c00   Section        0  my_rtos.o(i.Task1)
-    i.Task2                                  0x08000c88   Section        0  my_rtos.o(i.Task2)
-    i.TimerDaemonTask                        0x08000cb4   Section        0  my_rtos.o(i.TimerDaemonTask)
-    i.USART1_IRQHandler                      0x08000ce0   Section        0  my_rtos.o(i.USART1_IRQHandler)
-    i.Usart_Init                             0x08000d38   Section        0  usart.o(i.Usart_Init)
-    i.Usart_TransmitChar                     0x08000e50   Section        0  usart.o(i.Usart_TransmitChar)
-    i.__0printf$8                            0x08000e6c   Section        0  printf8.o(i.__0printf$8)
-    i.__scatterload_copy                     0x08000e8c   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x08000e9a   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x08000e9c   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.__set_BASEPRI                          0x08000eaa   Section        0  sched.o(i.__set_BASEPRI)
-    __set_BASEPRI                            0x08000eab   Thumb Code     8  sched.o(i.__set_BASEPRI)
-    i._printf_core                           0x08000eb4   Section        0  printf8.o(i._printf_core)
-    _printf_core                             0x08000eb5   Thumb Code   996  printf8.o(i._printf_core)
-    i._printf_post_padding                   0x080012c4   Section        0  printf8.o(i._printf_post_padding)
-    _printf_post_padding                     0x080012c5   Thumb Code    36  printf8.o(i._printf_post_padding)
-    i._printf_pre_padding                    0x080012e8   Section        0  printf8.o(i._printf_pre_padding)
-    _printf_pre_padding                      0x080012e9   Thumb Code    46  printf8.o(i._printf_pre_padding)
-    i.delay_list_add                         0x08001318   Section        0  task.o(i.delay_list_add)
-    i.delay_list_tick                        0x08001358   Section        0  task.o(i.delay_list_tick)
-    i.enter_critical                         0x08001398   Section        0  sched.o(i.enter_critical)
-    i.event_group_clear                      0x080013ac   Section        0  event_groups.o(i.event_group_clear)
-    i.event_group_set                        0x080013c6   Section        0  event_groups.o(i.event_group_set)
-    i.event_group_wait                       0x08001448   Section        0  event_groups.o(i.event_group_wait)
-    i.exit_critical                          0x080014e0   Section        0  sched.o(i.exit_critical)
-    i.fputc                                  0x080014ec   Section        0  usart.o(i.fputc)
-    i.led_blink_cb                           0x080014fc   Section        0  my_rtos.o(i.led_blink_cb)
-    i.main                                   0x0800152c   Section        0  main.o(i.main)
-    i.mutex_lock                             0x08001534   Section        0  semaphore.o(i.mutex_lock)
-    i.mutex_unlock                           0x080015c0   Section        0  semaphore.o(i.mutex_unlock)
-    i.my_memcpy                              0x0800161c   Section        0  queue.o(i.my_memcpy)
-    my_memcpy                                0x0800161d   Thumb Code    20  queue.o(i.my_memcpy)
-    i.need_preempt                           0x08001630   Section        0  task.o(i.need_preempt)
-    i.pend_to_list                           0x08001664   Section        0  task.o(i.pend_to_list)
-    i.queue_create                           0x08001682   Section        0  queue.o(i.queue_create)
-    i.queue_recv                             0x080016b0   Section        0  queue.o(i.queue_recv)
-    i.queue_send_from_isr                    0x08001740   Section        0  queue.o(i.queue_send_from_isr)
-    i.scheduler_add                          0x08001794   Section        0  sched.o(i.scheduler_add)
-    i.scheduler_add_from_isr                 0x080017e0   Section        0  sched.o(i.scheduler_add_from_isr)
-    i.scheduler_get_next                     0x08001808   Section        0  sched.o(i.scheduler_get_next)
-    i.scheduler_init                         0x0800184c   Section        0  sched.o(i.scheduler_init)
-    i.scheduler_on_pendsv                    0x08001874   Section        0  sched.o(i.scheduler_on_pendsv)
-    i.scheduler_remove                       0x080018f8   Section        0  sched.o(i.scheduler_remove)
-    i.scheduler_tick_1ms                     0x08001954   Section        0  sched.o(i.scheduler_tick_1ms)
-    i.systick_init_1ms                       0x08001990   Section        0  sched.o(i.systick_init_1ms)
-    i.task_create                            0x080019b8   Section        0  task.o(i.task_create)
-    i.task_delay                             0x08001a24   Section        0  task.o(i.task_delay)
-    i.task_notify                            0x08001a70   Section        0  task.o(i.task_notify)
-    i.task_notify_wait                       0x08001abc   Section        0  task.o(i.task_notify_wait)
-    i.task_stack_init                        0x08001b30   Section        0  task.o(i.task_stack_init)
-    i.timer_init                             0x08001bce   Section        0  timers.o(i.timer_init)
-    i.timer_start                            0x08001be4   Section        0  timers.o(i.timer_start)
-    i.timer_stop                             0x08001c48   Section        0  timers.o(i.timer_stop)
-    i.timer_tick                             0x08001c90   Section        0  timers.o(i.timer_tick)
-    i.trigger_switch                         0x08001cf0   Section        0  sched.o(i.trigger_switch)
-    trigger_switch                           0x08001cf1   Thumb Code    16  sched.o(i.trigger_switch)
-    i.trigger_switch                         0x08001d08   Section        0  task.o(i.trigger_switch)
-    trigger_switch                           0x08001d09   Thumb Code    16  task.o(i.trigger_switch)
-    i.trigger_switch                         0x08001d20   Section        0  semaphore.o(i.trigger_switch)
-    trigger_switch                           0x08001d21   Thumb Code    16  semaphore.o(i.trigger_switch)
-    i.trigger_switch                         0x08001d38   Section        0  queue.o(i.trigger_switch)
-    trigger_switch                           0x08001d39   Thumb Code    16  queue.o(i.trigger_switch)
-    i.vTaskSuspendAll                        0x08001d50   Section        0  sched.o(i.vTaskSuspendAll)
-    i.wake_one                               0x08001d5c   Section        0  task.o(i.wake_one)
-    i.xTaskResumeAll                         0x08001d78   Section        0  sched.o(i.xTaskResumeAll)
+    i.LED0_Init                              0x0800076c   Section        0  led.o(i.LED0_Init)
+    i.LED0_Off                               0x080007a0   Section        0  led.o(i.LED0_Off)
+    i.LED0_On                                0x080007b4   Section        0  led.o(i.LED0_On)
+    i.LED0_Toggle                            0x080007c8   Section        0  led.o(i.LED0_Toggle)
+    i.LED1_Init                              0x080007f4   Section        0  led.o(i.LED1_Init)
+    i.LED1_Off                               0x08000828   Section        0  led.o(i.LED1_Off)
+    i.LED1_Toggle                            0x0800083c   Section        0  led.o(i.LED1_Toggle)
+    i.My_RTOS_Start                          0x08000868   Section        0  my_rtos.o(i.My_RTOS_Start)
+    i.NotifyTestTask                         0x080008e0   Section        0  my_rtos.o(i.NotifyTestTask)
+    i.SetSysClock                            0x08000920   Section        0  system_stm32f10x.o(i.SetSysClock)
+    SetSysClock                              0x08000921   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
+    i.SetSysClockTo72                        0x08000928   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
+    SetSysClockTo72                          0x08000929   Thumb Code   214  system_stm32f10x.o(i.SetSysClockTo72)
+    i.Start_Task                             0x08000a08   Section        0  my_rtos.o(i.Start_Task)
+    i.SysTick_Handler                        0x08000ad0   Section        0  my_rtos.o(i.SysTick_Handler)
+    i.SystemCoreClockUpdate                  0x08000af4   Section        0  system_stm32f10x.o(i.SystemCoreClockUpdate)
+    i.SystemInit                             0x08000b98   Section        0  system_stm32f10x.o(i.SystemInit)
+    i.Task1                                  0x08000bf8   Section        0  my_rtos.o(i.Task1)
+    i.Task2                                  0x08000c80   Section        0  my_rtos.o(i.Task2)
+    i.TimerDaemonTask                        0x08000cac   Section        0  my_rtos.o(i.TimerDaemonTask)
+    i.USART1_IRQHandler                      0x08000cd8   Section        0  my_rtos.o(i.USART1_IRQHandler)
+    i.Usart_Init                             0x08000d30   Section        0  usart.o(i.Usart_Init)
+    i.Usart_TransmitChar                     0x08000e48   Section        0  usart.o(i.Usart_TransmitChar)
+    i.__0printf$8                            0x08000e64   Section        0  printf8.o(i.__0printf$8)
+    i.__scatterload_copy                     0x08000e84   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x08000e92   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x08000e94   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.__set_BASEPRI                          0x08000ea2   Section        0  sched.o(i.__set_BASEPRI)
+    __set_BASEPRI                            0x08000ea3   Thumb Code     8  sched.o(i.__set_BASEPRI)
+    i._printf_core                           0x08000eac   Section        0  printf8.o(i._printf_core)
+    _printf_core                             0x08000ead   Thumb Code   996  printf8.o(i._printf_core)
+    i._printf_post_padding                   0x080012bc   Section        0  printf8.o(i._printf_post_padding)
+    _printf_post_padding                     0x080012bd   Thumb Code    36  printf8.o(i._printf_post_padding)
+    i._printf_pre_padding                    0x080012e0   Section        0  printf8.o(i._printf_pre_padding)
+    _printf_pre_padding                      0x080012e1   Thumb Code    46  printf8.o(i._printf_pre_padding)
+    i.delay_list_add                         0x08001310   Section        0  task.o(i.delay_list_add)
+    i.delay_list_tick                        0x08001340   Section        0  task.o(i.delay_list_tick)
+    i.enter_critical                         0x08001374   Section        0  sched.o(i.enter_critical)
+    i.event_group_clear                      0x08001388   Section        0  event_groups.o(i.event_group_clear)
+    i.event_group_set                        0x080013a2   Section        0  event_groups.o(i.event_group_set)
+    i.event_group_wait                       0x08001424   Section        0  event_groups.o(i.event_group_wait)
+    i.exit_critical                          0x080014bc   Section        0  sched.o(i.exit_critical)
+    i.fputc                                  0x080014c8   Section        0  usart.o(i.fputc)
+    i.led_blink_cb                           0x080014d8   Section        0  my_rtos.o(i.led_blink_cb)
+    i.main                                   0x08001508   Section        0  main.o(i.main)
+    i.mutex_lock                             0x08001510   Section        0  semaphore.o(i.mutex_lock)
+    i.mutex_unlock                           0x0800159c   Section        0  semaphore.o(i.mutex_unlock)
+    i.my_memcpy                              0x080015f8   Section        0  queue.o(i.my_memcpy)
+    my_memcpy                                0x080015f9   Thumb Code    20  queue.o(i.my_memcpy)
+    i.need_preempt                           0x0800160c   Section        0  task.o(i.need_preempt)
+    i.pend_to_list                           0x08001640   Section        0  task.o(i.pend_to_list)
+    i.queue_create                           0x0800165e   Section        0  queue.o(i.queue_create)
+    i.queue_recv                             0x0800168c   Section        0  queue.o(i.queue_recv)
+    i.queue_send_from_isr                    0x0800171c   Section        0  queue.o(i.queue_send_from_isr)
+    i.scheduler_add                          0x08001770   Section        0  sched.o(i.scheduler_add)
+    i.scheduler_add_from_isr                 0x080017bc   Section        0  sched.o(i.scheduler_add_from_isr)
+    i.scheduler_get_next                     0x080017fc   Section        0  sched.o(i.scheduler_get_next)
+    i.scheduler_init                         0x08001840   Section        0  sched.o(i.scheduler_init)
+    i.scheduler_on_pendsv                    0x08001868   Section        0  sched.o(i.scheduler_on_pendsv)
+    i.scheduler_remove                       0x080018ec   Section        0  sched.o(i.scheduler_remove)
+    i.scheduler_tick_1ms                     0x08001948   Section        0  sched.o(i.scheduler_tick_1ms)
+    i.systick_init_1ms                       0x08001984   Section        0  sched.o(i.systick_init_1ms)
+    i.task_create                            0x080019ac   Section        0  task.o(i.task_create)
+    i.task_delay                             0x08001a18   Section        0  task.o(i.task_delay)
+    i.task_notify                            0x08001a64   Section        0  task.o(i.task_notify)
+    i.task_notify_wait                       0x08001ab0   Section        0  task.o(i.task_notify_wait)
+    i.task_stack_init                        0x08001b24   Section        0  task.o(i.task_stack_init)
+    i.timer_init                             0x08001bc2   Section        0  timers.o(i.timer_init)
+    i.timer_start                            0x08001bd8   Section        0  timers.o(i.timer_start)
+    i.timer_stop                             0x08001c3c   Section        0  timers.o(i.timer_stop)
+    i.timer_tick                             0x08001c84   Section        0  timers.o(i.timer_tick)
+    i.trigger_switch                         0x08001ce4   Section        0  sched.o(i.trigger_switch)
+    trigger_switch                           0x08001ce5   Thumb Code    16  sched.o(i.trigger_switch)
+    i.trigger_switch                         0x08001cfc   Section        0  task.o(i.trigger_switch)
+    trigger_switch                           0x08001cfd   Thumb Code    16  task.o(i.trigger_switch)
+    i.trigger_switch                         0x08001d14   Section        0  semaphore.o(i.trigger_switch)
+    trigger_switch                           0x08001d15   Thumb Code    16  semaphore.o(i.trigger_switch)
+    i.trigger_switch                         0x08001d2c   Section        0  queue.o(i.trigger_switch)
+    trigger_switch                           0x08001d2d   Thumb Code    16  queue.o(i.trigger_switch)
+    i.vTaskSuspendAll                        0x08001d44   Section        0  sched.o(i.vTaskSuspendAll)
+    i.wake_one                               0x08001d50   Section        0  task.o(i.wake_one)
+    i.xTaskResumeAll                         0x08001d6c   Section        0  sched.o(i.xTaskResumeAll)
     .data                                    0x20000000   Section        8  my_rtos.o(.data)
     .data                                    0x20000008   Section       12  sched.o(.data)
     .data                                    0x20000014   Section       12  task.o(.data)
@@ -828,70 +831,70 @@ Image Symbol Table
     CmdTask                                  0x080002b5   Thumb Code    58  my_rtos.o(i.CmdTask)
     GuardFault_Handler                       0x080002f9   Thumb Code    62  my_rtos.o(i.GuardFault_Handler)
     HardFault_Diagnose                       0x08000421   Thumb Code   334  my_rtos.o(i.HardFault_Diagnose)
-    LED0_Init                                0x08000775   Thumb Code    42  led.o(i.LED0_Init)
-    LED0_Off                                 0x080007a9   Thumb Code    14  led.o(i.LED0_Off)
-    LED0_On                                  0x080007bd   Thumb Code    14  led.o(i.LED0_On)
-    LED0_Toggle                              0x080007d1   Thumb Code    38  led.o(i.LED0_Toggle)
-    LED1_Init                                0x080007fd   Thumb Code    42  led.o(i.LED1_Init)
-    LED1_Off                                 0x08000831   Thumb Code    14  led.o(i.LED1_Off)
-    LED1_Toggle                              0x08000845   Thumb Code    38  led.o(i.LED1_Toggle)
-    My_RTOS_Start                            0x08000871   Thumb Code    84  my_rtos.o(i.My_RTOS_Start)
-    NotifyTestTask                           0x080008e9   Thumb Code    36  my_rtos.o(i.NotifyTestTask)
-    Start_Task                               0x08000a11   Thumb Code   140  my_rtos.o(i.Start_Task)
-    SysTick_Handler                          0x08000ad9   Thumb Code    30  my_rtos.o(i.SysTick_Handler)
-    SystemCoreClockUpdate                    0x08000afd   Thumb Code   142  system_stm32f10x.o(i.SystemCoreClockUpdate)
-    SystemInit                               0x08000ba1   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
-    Task1                                    0x08000c01   Thumb Code    96  my_rtos.o(i.Task1)
-    Task2                                    0x08000c89   Thumb Code    34  my_rtos.o(i.Task2)
-    TimerDaemonTask                          0x08000cb5   Thumb Code    38  my_rtos.o(i.TimerDaemonTask)
-    USART1_IRQHandler                        0x08000ce1   Thumb Code    72  my_rtos.o(i.USART1_IRQHandler)
-    Usart_Init                               0x08000d39   Thumb Code   254  usart.o(i.Usart_Init)
-    Usart_TransmitChar                       0x08000e51   Thumb Code    22  usart.o(i.Usart_TransmitChar)
-    __0printf$8                              0x08000e6d   Thumb Code    22  printf8.o(i.__0printf$8)
-    __1printf$8                              0x08000e6d   Thumb Code     0  printf8.o(i.__0printf$8)
-    __2printf                                0x08000e6d   Thumb Code     0  printf8.o(i.__0printf$8)
-    __scatterload_copy                       0x08000e8d   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x08000e9b   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x08000e9d   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    delay_list_add                           0x08001319   Thumb Code    60  task.o(i.delay_list_add)
-    delay_list_tick                          0x08001359   Thumb Code    60  task.o(i.delay_list_tick)
-    enter_critical                           0x08001399   Thumb Code    20  sched.o(i.enter_critical)
-    event_group_clear                        0x080013ad   Thumb Code    26  event_groups.o(i.event_group_clear)
-    event_group_set                          0x080013c7   Thumb Code   130  event_groups.o(i.event_group_set)
-    event_group_wait                         0x08001449   Thumb Code   138  event_groups.o(i.event_group_wait)
-    exit_critical                            0x080014e1   Thumb Code    12  sched.o(i.exit_critical)
-    fputc                                    0x080014ed   Thumb Code    16  usart.o(i.fputc)
-    led_blink_cb                             0x080014fd   Thumb Code    16  my_rtos.o(i.led_blink_cb)
-    main                                     0x0800152d   Thumb Code     8  main.o(i.main)
-    mutex_lock                               0x08001535   Thumb Code   136  semaphore.o(i.mutex_lock)
-    mutex_unlock                             0x080015c1   Thumb Code    88  semaphore.o(i.mutex_unlock)
-    need_preempt                             0x08001631   Thumb Code    46  task.o(i.need_preempt)
-    pend_to_list                             0x08001665   Thumb Code    30  task.o(i.pend_to_list)
-    queue_create                             0x08001683   Thumb Code    46  queue.o(i.queue_create)
-    queue_recv                               0x080016b1   Thumb Code   138  queue.o(i.queue_recv)
-    queue_send_from_isr                      0x08001741   Thumb Code    82  queue.o(i.queue_send_from_isr)
-    scheduler_add                            0x08001795   Thumb Code    66  sched.o(i.scheduler_add)
-    scheduler_add_from_isr                   0x080017e1   Thumb Code    36  sched.o(i.scheduler_add_from_isr)
-    scheduler_get_next                       0x08001809   Thumb Code    62  sched.o(i.scheduler_get_next)
-    scheduler_init                           0x0800184d   Thumb Code    32  sched.o(i.scheduler_init)
-    scheduler_on_pendsv                      0x08001875   Thumb Code   114  sched.o(i.scheduler_on_pendsv)
-    scheduler_remove                         0x080018f9   Thumb Code    88  sched.o(i.scheduler_remove)
-    scheduler_tick_1ms                       0x08001955   Thumb Code    46  sched.o(i.scheduler_tick_1ms)
-    systick_init_1ms                         0x08001991   Thumb Code    36  sched.o(i.systick_init_1ms)
-    task_create                              0x080019b9   Thumb Code   100  task.o(i.task_create)
-    task_delay                               0x08001a25   Thumb Code    68  task.o(i.task_delay)
-    task_notify                              0x08001a71   Thumb Code    72  task.o(i.task_notify)
-    task_notify_wait                         0x08001abd   Thumb Code   106  task.o(i.task_notify_wait)
-    task_stack_init                          0x08001b31   Thumb Code   158  task.o(i.task_stack_init)
-    timer_init                               0x08001bcf   Thumb Code    22  timers.o(i.timer_init)
-    timer_start                              0x08001be5   Thumb Code    96  timers.o(i.timer_start)
-    timer_stop                               0x08001c49   Thumb Code    66  timers.o(i.timer_stop)
-    timer_tick                               0x08001c91   Thumb Code    86  timers.o(i.timer_tick)
-    vTaskSuspendAll                          0x08001d51   Thumb Code     8  sched.o(i.vTaskSuspendAll)
-    wake_one                                 0x08001d5d   Thumb Code    28  task.o(i.wake_one)
-    xTaskResumeAll                           0x08001d79   Thumb Code     8  sched.o(i.xTaskResumeAll)
-    Region$$Table$$Base                      0x08001d84   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08001da4   Number         0  anon$$obj.o(Region$$Table)
+    LED0_Init                                0x0800076d   Thumb Code    42  led.o(i.LED0_Init)
+    LED0_Off                                 0x080007a1   Thumb Code    14  led.o(i.LED0_Off)
+    LED0_On                                  0x080007b5   Thumb Code    14  led.o(i.LED0_On)
+    LED0_Toggle                              0x080007c9   Thumb Code    38  led.o(i.LED0_Toggle)
+    LED1_Init                                0x080007f5   Thumb Code    42  led.o(i.LED1_Init)
+    LED1_Off                                 0x08000829   Thumb Code    14  led.o(i.LED1_Off)
+    LED1_Toggle                              0x0800083d   Thumb Code    38  led.o(i.LED1_Toggle)
+    My_RTOS_Start                            0x08000869   Thumb Code    84  my_rtos.o(i.My_RTOS_Start)
+    NotifyTestTask                           0x080008e1   Thumb Code    36  my_rtos.o(i.NotifyTestTask)
+    Start_Task                               0x08000a09   Thumb Code   140  my_rtos.o(i.Start_Task)
+    SysTick_Handler                          0x08000ad1   Thumb Code    30  my_rtos.o(i.SysTick_Handler)
+    SystemCoreClockUpdate                    0x08000af5   Thumb Code   142  system_stm32f10x.o(i.SystemCoreClockUpdate)
+    SystemInit                               0x08000b99   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
+    Task1                                    0x08000bf9   Thumb Code    96  my_rtos.o(i.Task1)
+    Task2                                    0x08000c81   Thumb Code    34  my_rtos.o(i.Task2)
+    TimerDaemonTask                          0x08000cad   Thumb Code    38  my_rtos.o(i.TimerDaemonTask)
+    USART1_IRQHandler                        0x08000cd9   Thumb Code    72  my_rtos.o(i.USART1_IRQHandler)
+    Usart_Init                               0x08000d31   Thumb Code   254  usart.o(i.Usart_Init)
+    Usart_TransmitChar                       0x08000e49   Thumb Code    22  usart.o(i.Usart_TransmitChar)
+    __0printf$8                              0x08000e65   Thumb Code    22  printf8.o(i.__0printf$8)
+    __1printf$8                              0x08000e65   Thumb Code     0  printf8.o(i.__0printf$8)
+    __2printf                                0x08000e65   Thumb Code     0  printf8.o(i.__0printf$8)
+    __scatterload_copy                       0x08000e85   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x08000e93   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x08000e95   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    delay_list_add                           0x08001311   Thumb Code    42  task.o(i.delay_list_add)
+    delay_list_tick                          0x08001341   Thumb Code    48  task.o(i.delay_list_tick)
+    enter_critical                           0x08001375   Thumb Code    20  sched.o(i.enter_critical)
+    event_group_clear                        0x08001389   Thumb Code    26  event_groups.o(i.event_group_clear)
+    event_group_set                          0x080013a3   Thumb Code   130  event_groups.o(i.event_group_set)
+    event_group_wait                         0x08001425   Thumb Code   138  event_groups.o(i.event_group_wait)
+    exit_critical                            0x080014bd   Thumb Code    12  sched.o(i.exit_critical)
+    fputc                                    0x080014c9   Thumb Code    16  usart.o(i.fputc)
+    led_blink_cb                             0x080014d9   Thumb Code    16  my_rtos.o(i.led_blink_cb)
+    main                                     0x08001509   Thumb Code     8  main.o(i.main)
+    mutex_lock                               0x08001511   Thumb Code   136  semaphore.o(i.mutex_lock)
+    mutex_unlock                             0x0800159d   Thumb Code    88  semaphore.o(i.mutex_unlock)
+    need_preempt                             0x0800160d   Thumb Code    46  task.o(i.need_preempt)
+    pend_to_list                             0x08001641   Thumb Code    30  task.o(i.pend_to_list)
+    queue_create                             0x0800165f   Thumb Code    46  queue.o(i.queue_create)
+    queue_recv                               0x0800168d   Thumb Code   138  queue.o(i.queue_recv)
+    queue_send_from_isr                      0x0800171d   Thumb Code    82  queue.o(i.queue_send_from_isr)
+    scheduler_add                            0x08001771   Thumb Code    66  sched.o(i.scheduler_add)
+    scheduler_add_from_isr                   0x080017bd   Thumb Code    56  sched.o(i.scheduler_add_from_isr)
+    scheduler_get_next                       0x080017fd   Thumb Code    62  sched.o(i.scheduler_get_next)
+    scheduler_init                           0x08001841   Thumb Code    32  sched.o(i.scheduler_init)
+    scheduler_on_pendsv                      0x08001869   Thumb Code   114  sched.o(i.scheduler_on_pendsv)
+    scheduler_remove                         0x080018ed   Thumb Code    88  sched.o(i.scheduler_remove)
+    scheduler_tick_1ms                       0x08001949   Thumb Code    46  sched.o(i.scheduler_tick_1ms)
+    systick_init_1ms                         0x08001985   Thumb Code    36  sched.o(i.systick_init_1ms)
+    task_create                              0x080019ad   Thumb Code   100  task.o(i.task_create)
+    task_delay                               0x08001a19   Thumb Code    68  task.o(i.task_delay)
+    task_notify                              0x08001a65   Thumb Code    72  task.o(i.task_notify)
+    task_notify_wait                         0x08001ab1   Thumb Code   106  task.o(i.task_notify_wait)
+    task_stack_init                          0x08001b25   Thumb Code   158  task.o(i.task_stack_init)
+    timer_init                               0x08001bc3   Thumb Code    22  timers.o(i.timer_init)
+    timer_start                              0x08001bd9   Thumb Code    96  timers.o(i.timer_start)
+    timer_stop                               0x08001c3d   Thumb Code    66  timers.o(i.timer_stop)
+    timer_tick                               0x08001c85   Thumb Code    86  timers.o(i.timer_tick)
+    vTaskSuspendAll                          0x08001d45   Thumb Code     8  sched.o(i.vTaskSuspendAll)
+    wake_one                                 0x08001d51   Thumb Code    28  task.o(i.wake_one)
+    xTaskResumeAll                           0x08001d6d   Thumb Code     8  sched.o(i.xTaskResumeAll)
+    Region$$Table$$Base                      0x08001d78   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08001d98   Number         0  anon$$obj.o(Region$$Table)
     test_eg                                  0x20000000   Data           8  my_rtos.o(.data)
     slice_ticks                              0x20000008   Data           4  sched.o(.data)
     slice_expired                            0x2000000c   Data           1  sched.o(.data)
@@ -932,129 +935,129 @@ Memory Map of the image
 
   Image Entry point : 0x080000ed
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00001de4, Max: 0x00010000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00001dd8, Max: 0x00010000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00001da4, Max: 0x00010000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00001d98, Max: 0x00010000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x08000000   0x08000000   0x000000ec   Data   RO          663    RESET               startup_stm32f10x_md.o
-    0x080000ec   0x080000ec   0x00000000   Code   RO          709  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x080000ec   0x080000ec   0x00000004   Code   RO          975    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x080000f0   0x080000f0   0x00000004   Code   RO          978    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x080000f4   0x080000f4   0x00000000   Code   RO          980    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x080000f4   0x080000f4   0x00000000   Code   RO          982    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x080000f4   0x080000f4   0x00000008   Code   RO          983    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x080000fc   0x080000fc   0x00000000   Code   RO          985    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x080000fc   0x080000fc   0x00000000   Code   RO          987    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x080000fc   0x080000fc   0x00000004   Code   RO          976    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
-    0x08000100   0x08000100   0x000000ac   Code   RO          405    .text               task_switch.o
-    0x080001ac   0x080001ac   0x00000024   Code   RO          664    .text               startup_stm32f10x_md.o
-    0x080001d0   0x080001d0   0x0000001c   Code   RO          712    .text               mc_w.l(strcmp.o)
-    0x080001ec   0x080001ec   0x00000062   Code   RO          992    .text               mc_w.l(uldiv.o)
+    0x08000000   0x08000000   0x000000ec   Data   RO          673    RESET               startup_stm32f10x_md.o
+    0x080000ec   0x080000ec   0x00000000   Code   RO          719  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x080000ec   0x080000ec   0x00000004   Code   RO          985    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x080000f0   0x080000f0   0x00000004   Code   RO          988    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x080000f4   0x080000f4   0x00000000   Code   RO          990    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x080000f4   0x080000f4   0x00000000   Code   RO          992    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x080000f4   0x080000f4   0x00000008   Code   RO          993    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x080000fc   0x080000fc   0x00000000   Code   RO          995    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x080000fc   0x080000fc   0x00000000   Code   RO          997    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x080000fc   0x080000fc   0x00000004   Code   RO          986    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08000100   0x08000100   0x000000ac   Code   RO          403    .text               task_switch.o
+    0x080001ac   0x080001ac   0x00000024   Code   RO          674    .text               startup_stm32f10x_md.o
+    0x080001d0   0x080001d0   0x0000001c   Code   RO          722    .text               mc_w.l(strcmp.o)
+    0x080001ec   0x080001ec   0x00000062   Code   RO         1002    .text               mc_w.l(uldiv.o)
     0x0800024e   0x0800024e   0x00000002   PAD
-    0x08000250   0x08000250   0x00000024   Code   RO         1005    .text               mc_w.l(init.o)
-    0x08000274   0x08000274   0x0000001e   Code   RO         1007    .text               mc_w.l(llshl.o)
-    0x08000292   0x08000292   0x00000020   Code   RO         1009    .text               mc_w.l(llushr.o)
+    0x08000250   0x08000250   0x00000024   Code   RO         1015    .text               mc_w.l(init.o)
+    0x08000274   0x08000274   0x0000001e   Code   RO         1017    .text               mc_w.l(llshl.o)
+    0x08000292   0x08000292   0x00000020   Code   RO         1019    .text               mc_w.l(llushr.o)
     0x080002b2   0x080002b2   0x00000002   PAD
     0x080002b4   0x080002b4   0x00000044   Code   RO           18    i.CmdTask           my_rtos.o
     0x080002f8   0x080002f8   0x00000128   Code   RO           19    i.GuardFault_Handler  my_rtos.o
-    0x08000420   0x08000420   0x00000354   Code   RO           20    i.HardFault_Diagnose  my_rtos.o
-    0x08000774   0x08000774   0x00000034   Code   RO          562    i.LED0_Init         led.o
-    0x080007a8   0x080007a8   0x00000014   Code   RO          563    i.LED0_Off          led.o
-    0x080007bc   0x080007bc   0x00000014   Code   RO          564    i.LED0_On           led.o
-    0x080007d0   0x080007d0   0x0000002c   Code   RO          565    i.LED0_Toggle       led.o
-    0x080007fc   0x080007fc   0x00000034   Code   RO          566    i.LED1_Init         led.o
-    0x08000830   0x08000830   0x00000014   Code   RO          567    i.LED1_Off          led.o
-    0x08000844   0x08000844   0x0000002c   Code   RO          569    i.LED1_Toggle       led.o
-    0x08000870   0x08000870   0x00000078   Code   RO           21    i.My_RTOS_Start     my_rtos.o
-    0x080008e8   0x080008e8   0x00000040   Code   RO           22    i.NotifyTestTask    my_rtos.o
-    0x08000928   0x08000928   0x00000008   Code   RO          668    i.SetSysClock       system_stm32f10x.o
-    0x08000930   0x08000930   0x000000e0   Code   RO          669    i.SetSysClockTo72   system_stm32f10x.o
-    0x08000a10   0x08000a10   0x000000c8   Code   RO           23    i.Start_Task        my_rtos.o
-    0x08000ad8   0x08000ad8   0x00000024   Code   RO           24    i.SysTick_Handler   my_rtos.o
-    0x08000afc   0x08000afc   0x000000a4   Code   RO          670    i.SystemCoreClockUpdate  system_stm32f10x.o
-    0x08000ba0   0x08000ba0   0x00000060   Code   RO          671    i.SystemInit        system_stm32f10x.o
-    0x08000c00   0x08000c00   0x00000088   Code   RO           25    i.Task1             my_rtos.o
-    0x08000c88   0x08000c88   0x0000002c   Code   RO           26    i.Task2             my_rtos.o
-    0x08000cb4   0x08000cb4   0x0000002c   Code   RO           27    i.TimerDaemonTask   my_rtos.o
-    0x08000ce0   0x08000ce0   0x00000058   Code   RO           28    i.USART1_IRQHandler  my_rtos.o
-    0x08000d38   0x08000d38   0x00000118   Code   RO          619    i.Usart_Init        usart.o
-    0x08000e50   0x08000e50   0x0000001c   Code   RO          620    i.Usart_TransmitChar  usart.o
-    0x08000e6c   0x08000e6c   0x00000020   Code   RO          921    i.__0printf$8       mc_w.l(printf8.o)
-    0x08000e8c   0x08000e8c   0x0000000e   Code   RO         1017    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08000e9a   0x08000e9a   0x00000002   Code   RO         1018    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08000e9c   0x08000e9c   0x0000000e   Code   RO         1019    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x08000eaa   0x08000eaa   0x00000008   Code   RO          157    i.__set_BASEPRI     sched.o
-    0x08000eb2   0x08000eb2   0x00000002   PAD
-    0x08000eb4   0x08000eb4   0x00000410   Code   RO          928    i._printf_core      mc_w.l(printf8.o)
-    0x080012c4   0x080012c4   0x00000024   Code   RO          929    i._printf_post_padding  mc_w.l(printf8.o)
-    0x080012e8   0x080012e8   0x0000002e   Code   RO          930    i._printf_pre_padding  mc_w.l(printf8.o)
-    0x08001316   0x08001316   0x00000002   PAD
-    0x08001318   0x08001318   0x00000040   Code   RO          259    i.delay_list_add    task.o
-    0x08001358   0x08001358   0x00000040   Code   RO          260    i.delay_list_tick   task.o
-    0x08001398   0x08001398   0x00000014   Code   RO          158    i.enter_critical    sched.o
-    0x080013ac   0x080013ac   0x0000001a   Code   RO          499    i.event_group_clear  event_groups.o
-    0x080013c6   0x080013c6   0x00000082   Code   RO          501    i.event_group_set   event_groups.o
-    0x08001448   0x08001448   0x00000098   Code   RO          502    i.event_group_wait  event_groups.o
-    0x080014e0   0x080014e0   0x0000000c   Code   RO          159    i.exit_critical     sched.o
-    0x080014ec   0x080014ec   0x00000010   Code   RO          622    i.fputc             usart.o
-    0x080014fc   0x080014fc   0x00000030   Code   RO           29    i.led_blink_cb      my_rtos.o
-    0x0800152c   0x0800152c   0x00000008   Code   RO            1    i.main              main.o
-    0x08001534   0x08001534   0x0000008c   Code   RO          348    i.mutex_lock        semaphore.o
-    0x080015c0   0x080015c0   0x0000005c   Code   RO          349    i.mutex_unlock      semaphore.o
-    0x0800161c   0x0800161c   0x00000014   Code   RO          409    i.my_memcpy         queue.o
-    0x08001630   0x08001630   0x00000034   Code   RO          261    i.need_preempt      task.o
-    0x08001664   0x08001664   0x0000001e   Code   RO          262    i.pend_to_list      task.o
-    0x08001682   0x08001682   0x0000002e   Code   RO          410    i.queue_create      queue.o
-    0x080016b0   0x080016b0   0x00000090   Code   RO          411    i.queue_recv        queue.o
-    0x08001740   0x08001740   0x00000052   Code   RO          414    i.queue_send_from_isr  queue.o
-    0x08001792   0x08001792   0x00000002   PAD
-    0x08001794   0x08001794   0x0000004c   Code   RO          160    i.scheduler_add     sched.o
-    0x080017e0   0x080017e0   0x00000028   Code   RO          161    i.scheduler_add_from_isr  sched.o
-    0x08001808   0x08001808   0x00000044   Code   RO          162    i.scheduler_get_next  sched.o
-    0x0800184c   0x0800184c   0x00000028   Code   RO          163    i.scheduler_init    sched.o
-    0x08001874   0x08001874   0x00000084   Code   RO          164    i.scheduler_on_pendsv  sched.o
-    0x080018f8   0x080018f8   0x0000005c   Code   RO          165    i.scheduler_remove  sched.o
-    0x08001954   0x08001954   0x0000003c   Code   RO          166    i.scheduler_tick_1ms  sched.o
-    0x08001990   0x08001990   0x00000028   Code   RO          167    i.systick_init_1ms  sched.o
-    0x080019b8   0x080019b8   0x0000006c   Code   RO          263    i.task_create       task.o
-    0x08001a24   0x08001a24   0x0000004c   Code   RO          264    i.task_delay        task.o
-    0x08001a70   0x08001a70   0x0000004c   Code   RO          265    i.task_notify       task.o
-    0x08001abc   0x08001abc   0x00000074   Code   RO          267    i.task_notify_wait  task.o
-    0x08001b30   0x08001b30   0x0000009e   Code   RO          268    i.task_stack_init   task.o
-    0x08001bce   0x08001bce   0x00000016   Code   RO          458    i.timer_init        timers.o
-    0x08001be4   0x08001be4   0x00000064   Code   RO          459    i.timer_start       timers.o
-    0x08001c48   0x08001c48   0x00000048   Code   RO          460    i.timer_stop        timers.o
-    0x08001c90   0x08001c90   0x00000060   Code   RO          461    i.timer_tick        timers.o
-    0x08001cf0   0x08001cf0   0x00000018   Code   RO          168    i.trigger_switch    sched.o
-    0x08001d08   0x08001d08   0x00000018   Code   RO          269    i.trigger_switch    task.o
-    0x08001d20   0x08001d20   0x00000018   Code   RO          355    i.trigger_switch    semaphore.o
-    0x08001d38   0x08001d38   0x00000018   Code   RO          415    i.trigger_switch    queue.o
-    0x08001d50   0x08001d50   0x0000000c   Code   RO          169    i.vTaskSuspendAll   sched.o
-    0x08001d5c   0x08001d5c   0x0000001c   Code   RO          270    i.wake_one          task.o
-    0x08001d78   0x08001d78   0x0000000c   Code   RO          170    i.xTaskResumeAll    sched.o
-    0x08001d84   0x08001d84   0x00000020   Data   RO         1015    Region$$Table       anon$$obj.o
+    0x08000420   0x08000420   0x0000034c   Code   RO           20    i.HardFault_Diagnose  my_rtos.o
+    0x0800076c   0x0800076c   0x00000034   Code   RO          572    i.LED0_Init         led.o
+    0x080007a0   0x080007a0   0x00000014   Code   RO          573    i.LED0_Off          led.o
+    0x080007b4   0x080007b4   0x00000014   Code   RO          574    i.LED0_On           led.o
+    0x080007c8   0x080007c8   0x0000002c   Code   RO          575    i.LED0_Toggle       led.o
+    0x080007f4   0x080007f4   0x00000034   Code   RO          576    i.LED1_Init         led.o
+    0x08000828   0x08000828   0x00000014   Code   RO          577    i.LED1_Off          led.o
+    0x0800083c   0x0800083c   0x0000002c   Code   RO          579    i.LED1_Toggle       led.o
+    0x08000868   0x08000868   0x00000078   Code   RO           21    i.My_RTOS_Start     my_rtos.o
+    0x080008e0   0x080008e0   0x00000040   Code   RO           22    i.NotifyTestTask    my_rtos.o
+    0x08000920   0x08000920   0x00000008   Code   RO          678    i.SetSysClock       system_stm32f10x.o
+    0x08000928   0x08000928   0x000000e0   Code   RO          679    i.SetSysClockTo72   system_stm32f10x.o
+    0x08000a08   0x08000a08   0x000000c8   Code   RO           23    i.Start_Task        my_rtos.o
+    0x08000ad0   0x08000ad0   0x00000024   Code   RO           24    i.SysTick_Handler   my_rtos.o
+    0x08000af4   0x08000af4   0x000000a4   Code   RO          680    i.SystemCoreClockUpdate  system_stm32f10x.o
+    0x08000b98   0x08000b98   0x00000060   Code   RO          681    i.SystemInit        system_stm32f10x.o
+    0x08000bf8   0x08000bf8   0x00000088   Code   RO           25    i.Task1             my_rtos.o
+    0x08000c80   0x08000c80   0x0000002c   Code   RO           26    i.Task2             my_rtos.o
+    0x08000cac   0x08000cac   0x0000002c   Code   RO           27    i.TimerDaemonTask   my_rtos.o
+    0x08000cd8   0x08000cd8   0x00000058   Code   RO           28    i.USART1_IRQHandler  my_rtos.o
+    0x08000d30   0x08000d30   0x00000118   Code   RO          629    i.Usart_Init        usart.o
+    0x08000e48   0x08000e48   0x0000001c   Code   RO          630    i.Usart_TransmitChar  usart.o
+    0x08000e64   0x08000e64   0x00000020   Code   RO          931    i.__0printf$8       mc_w.l(printf8.o)
+    0x08000e84   0x08000e84   0x0000000e   Code   RO         1027    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08000e92   0x08000e92   0x00000002   Code   RO         1028    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08000e94   0x08000e94   0x0000000e   Code   RO         1029    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x08000ea2   0x08000ea2   0x00000008   Code   RO          155    i.__set_BASEPRI     sched.o
+    0x08000eaa   0x08000eaa   0x00000002   PAD
+    0x08000eac   0x08000eac   0x00000410   Code   RO          938    i._printf_core      mc_w.l(printf8.o)
+    0x080012bc   0x080012bc   0x00000024   Code   RO          939    i._printf_post_padding  mc_w.l(printf8.o)
+    0x080012e0   0x080012e0   0x0000002e   Code   RO          940    i._printf_pre_padding  mc_w.l(printf8.o)
+    0x0800130e   0x0800130e   0x00000002   PAD
+    0x08001310   0x08001310   0x00000030   Code   RO          257    i.delay_list_add    task.o
+    0x08001340   0x08001340   0x00000034   Code   RO          258    i.delay_list_tick   task.o
+    0x08001374   0x08001374   0x00000014   Code   RO          156    i.enter_critical    sched.o
+    0x08001388   0x08001388   0x0000001a   Code   RO          497    i.event_group_clear  event_groups.o
+    0x080013a2   0x080013a2   0x00000082   Code   RO          500    i.event_group_set   event_groups.o
+    0x08001424   0x08001424   0x00000098   Code   RO          502    i.event_group_wait  event_groups.o
+    0x080014bc   0x080014bc   0x0000000c   Code   RO          157    i.exit_critical     sched.o
+    0x080014c8   0x080014c8   0x00000010   Code   RO          632    i.fputc             usart.o
+    0x080014d8   0x080014d8   0x00000030   Code   RO           29    i.led_blink_cb      my_rtos.o
+    0x08001508   0x08001508   0x00000008   Code   RO            1    i.main              main.o
+    0x08001510   0x08001510   0x0000008c   Code   RO          346    i.mutex_lock        semaphore.o
+    0x0800159c   0x0800159c   0x0000005c   Code   RO          347    i.mutex_unlock      semaphore.o
+    0x080015f8   0x080015f8   0x00000014   Code   RO          407    i.my_memcpy         queue.o
+    0x0800160c   0x0800160c   0x00000034   Code   RO          259    i.need_preempt      task.o
+    0x08001640   0x08001640   0x0000001e   Code   RO          260    i.pend_to_list      task.o
+    0x0800165e   0x0800165e   0x0000002e   Code   RO          408    i.queue_create      queue.o
+    0x0800168c   0x0800168c   0x00000090   Code   RO          409    i.queue_recv        queue.o
+    0x0800171c   0x0800171c   0x00000052   Code   RO          412    i.queue_send_from_isr  queue.o
+    0x0800176e   0x0800176e   0x00000002   PAD
+    0x08001770   0x08001770   0x0000004c   Code   RO          158    i.scheduler_add     sched.o
+    0x080017bc   0x080017bc   0x00000040   Code   RO          159    i.scheduler_add_from_isr  sched.o
+    0x080017fc   0x080017fc   0x00000044   Code   RO          160    i.scheduler_get_next  sched.o
+    0x08001840   0x08001840   0x00000028   Code   RO          161    i.scheduler_init    sched.o
+    0x08001868   0x08001868   0x00000084   Code   RO          162    i.scheduler_on_pendsv  sched.o
+    0x080018ec   0x080018ec   0x0000005c   Code   RO          163    i.scheduler_remove  sched.o
+    0x08001948   0x08001948   0x0000003c   Code   RO          164    i.scheduler_tick_1ms  sched.o
+    0x08001984   0x08001984   0x00000028   Code   RO          165    i.systick_init_1ms  sched.o
+    0x080019ac   0x080019ac   0x0000006c   Code   RO          261    i.task_create       task.o
+    0x08001a18   0x08001a18   0x0000004c   Code   RO          262    i.task_delay        task.o
+    0x08001a64   0x08001a64   0x0000004c   Code   RO          263    i.task_notify       task.o
+    0x08001ab0   0x08001ab0   0x00000074   Code   RO          265    i.task_notify_wait  task.o
+    0x08001b24   0x08001b24   0x0000009e   Code   RO          266    i.task_stack_init   task.o
+    0x08001bc2   0x08001bc2   0x00000016   Code   RO          456    i.timer_init        timers.o
+    0x08001bd8   0x08001bd8   0x00000064   Code   RO          457    i.timer_start       timers.o
+    0x08001c3c   0x08001c3c   0x00000048   Code   RO          458    i.timer_stop        timers.o
+    0x08001c84   0x08001c84   0x00000060   Code   RO          459    i.timer_tick        timers.o
+    0x08001ce4   0x08001ce4   0x00000018   Code   RO          166    i.trigger_switch    sched.o
+    0x08001cfc   0x08001cfc   0x00000018   Code   RO          267    i.trigger_switch    task.o
+    0x08001d14   0x08001d14   0x00000018   Code   RO          353    i.trigger_switch    semaphore.o
+    0x08001d2c   0x08001d2c   0x00000018   Code   RO          413    i.trigger_switch    queue.o
+    0x08001d44   0x08001d44   0x0000000c   Code   RO          167    i.vTaskSuspendAll   sched.o
+    0x08001d50   0x08001d50   0x0000001c   Code   RO          268    i.wake_one          task.o
+    0x08001d6c   0x08001d6c   0x0000000c   Code   RO          168    i.xTaskResumeAll    sched.o
+    0x08001d78   0x08001d78   0x00000020   Data   RO         1025    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08001da4, Size: 0x00000b8c, Max: 0x00005000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08001d98, Size: 0x00000b8c, Max: 0x00005000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x08001da4   0x00000008   Data   RW           31    .data               my_rtos.o
-    0x20000008   0x08001dac   0x0000000c   Data   RW          171    .data               sched.o
-    0x20000014   0x08001db8   0x0000000c   Data   RW          272    .data               task.o
-    0x20000020   0x08001dc4   0x00000004   Data   RW          463    .data               timers.o
-    0x20000024   0x08001dc8   0x00000002   Data   RW          624    .data               usart.o
-    0x20000026   0x08001dca   0x00000002   PAD
-    0x20000028   0x08001dcc   0x00000014   Data   RW          672    .data               system_stm32f10x.o
-    0x2000003c   0x08001de0   0x00000004   Data   RW          989    .data               mc_w.l(stdout.o)
+    0x20000000   0x08001d98   0x00000008   Data   RW           31    .data               my_rtos.o
+    0x20000008   0x08001da0   0x0000000c   Data   RW          169    .data               sched.o
+    0x20000014   0x08001dac   0x0000000c   Data   RW          270    .data               task.o
+    0x20000020   0x08001db8   0x00000004   Data   RW          461    .data               timers.o
+    0x20000024   0x08001dbc   0x00000002   Data   RW          634    .data               usart.o
+    0x20000026   0x08001dbe   0x00000002   PAD
+    0x20000028   0x08001dc0   0x00000014   Data   RW          682    .data               system_stm32f10x.o
+    0x2000003c   0x08001dd4   0x00000004   Data   RW          999    .data               mc_w.l(stdout.o)
     0x20000040        -       0x0000067c   Zero   RW           30    .bss                my_rtos.o
-    0x200006bc        -       0x00000020   Zero   RW          271    .bss                task.o
-    0x200006dc        -       0x00000048   Zero   RW          462    .bss                timers.o
-    0x20000724        -       0x00000064   Zero   RW          623    .bss                usart.o
-    0x20000788        -       0x00000400   Zero   RW          661    STACK               startup_stm32f10x_md.o
-    0x20000b88        -       0x00000004   Zero   RW          404    TCB_BSS             task_switch.o
+    0x200006bc        -       0x00000020   Zero   RW          269    .bss                task.o
+    0x200006dc        -       0x00000048   Zero   RW          460    .bss                timers.o
+    0x20000724        -       0x00000064   Zero   RW          633    .bss                usart.o
+    0x20000788        -       0x00000400   Zero   RW          671    STACK               startup_stm32f10x_md.o
+    0x20000b88        -       0x00000004   Zero   RW          402    TCB_BSS             task_switch.o
 
 
 ==============================================================================
@@ -1064,22 +1067,22 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       308         14          0          0          0       2753   event_groups.o
+       308         14          0          0          0       2757   event_groups.o
        252         50          0          0          0       2668   led.o
          8          0          0          0          0       1827   main.o
-      1996        996          0          8       1660     215967   my_rtos.o
+      1988        988          0          8       1660     216005   my_rtos.o
        316         14          0          0          0       3450   queue.o
-       636         84          0         12          0      23790   sched.o
+       660         88          0         12          0      23850   sched.o
        256         16          0          0          0       2184   semaphore.o
         36          8        236          0       1024        792   startup_stm32f10x_md.o
        492         50          0         20          0       2741   system_stm32f10x.o
-       796         52          0         12         32       7901   task.o
+       768         54          0         12         32       7877   task.o
        172         14          0          0          4        328   task_switch.o
-       290         20          0          4         72       3251   timers.o
+       290         20          0          4         72       3271   timers.o
        324         32          0          2        100      18606   usart.o
 
     ----------------------------------------------------------------------
-      5886       1350        268         60       2892     286258   Object Totals
+      5874       1348        268         60       2892     286356   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          4          0          0          2          0          0   (incl. Padding)
 
@@ -1124,15 +1127,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      7320       1420        268         64       2892     283442   Grand Totals
-      7320       1420        268         64       2892     283442   ELF Image Totals
-      7320       1420        268         64          0          0   ROM Totals
+      7308       1418        268         64       2892     283540   Grand Totals
+      7308       1418        268         64       2892     283540   ELF Image Totals
+      7308       1418        268         64          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 7588 (   7.41kB)
+    Total RO  Size (Code + RO Data)                 7576 (   7.40kB)
     Total RW  Size (RW Data + ZI Data)              2956 (   2.89kB)
-    Total ROM Size (Code + RO Data + RW Data)       7652 (   7.47kB)
+    Total ROM Size (Code + RO Data + RW Data)       7640 (   7.46kB)
 
 ==============================================================================
 
